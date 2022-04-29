@@ -30,7 +30,7 @@ public class DocStreamConfig {
 
     @Bean
     public CustomMinioClient minioClient() {
-        //如果为false则表示不需要进行bean初始化
+        //如果为false则表示不需要进行bean初始化.
         if (!properties.isInitMinio()) return null;
         if (!StringUtils.hasText(properties.getUrl())) {
             throw new BeanInstantiationException(CustomMinioClient.class, "无效的URl");
