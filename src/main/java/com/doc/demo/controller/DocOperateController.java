@@ -1,0 +1,98 @@
+package com.doc.demo.controller;
+
+import com.doc.demo.enums.DocStreamEnum;
+import com.doc.demo.factory.DocStreamFactory;
+import com.doc.demo.model.stream.param.DocMinioParam;
+import com.doc.demo.model.stream.result.minio.DocMinioResult;
+import com.doc.demo.stream.DocStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.*;
+import java.net.URLEncoder;
+
+/**
+ * @author : zengYeMin
+ * @date : 2022/3/30 16:28
+ **/
+@RestController
+@RequestMapping("doc")
+@SuppressWarnings("all")//压制一下类型转换的警告
+public class DocOperateController {
+
+    private Logger logger = LoggerFactory.getLogger(DocOperateController.class);
+    //    @Resource
+    //    private DocStreamProperties properties;
+
+    @GetMapping("upload")
+    public ResponseEntity uploadImage() {
+        File file = new File("D:\\DELL\\Desktop\\加密测试1.mpp");
+        try (FileInputStream fis = new FileInputStream(file)) {
+            DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
+                .setBucket("ethic-bucket")//存入的桶
+                .setBucketPath("zym/doc/")//桶中的路径
+                .setFileName(file.getName())//文件名字
+                .setDocId("123456789")//文件唯一表示ID
+                .setUserNick("zym")//操作用户
+                .setUserId("1234")//操作用户ID
+                .build();
+            //执行下载，如果文件需要加密则必须在调用上传之前设置解密key
+            DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
+            //执行minio上传
+            DocMinioResult result = (DocMinioResult) docStream.uploadDoc(docMinioParam, fis);
+            //            Map<String, String> multiPartTempPathMap = properties.getMultiPartTempPathMap();
+            System.out.println("getEncryptKey:" + result.getSecretKey());
+            boolean success = result.isSuccess();
+            System.out.println("success = " + success);
+        } catch (FileNotFoundException e) {
+            return new ResponseEntity("failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            return new ResponseEntity("failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity("success", HttpStatus.OK);
+    }
+
+    @GetMapping("download")
+    public ResponseEntity download(@RequestParam("fileName") String fileName) throws UnsupportedEncodingException {
+        //        RandomAccessFile file = new RandomAccessFile();
+        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置解密
+            .setBucket("ethic-bucket")//桶的名字
+            .setBucketPath("zym/doc/")//桶中存放的具体路径
+            .setFileName(fileName)//文件名
+            .setDocId("123456789")//文件唯一标识ID
+            .setUserNick("zym")//用户名
+            .setUserId("1234")//用户ID
+            .build();
+        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
+        //执行下载，如果文件需要解密则必须在调用下载之前设置解密key
+        byte[] bytes = docStream.downloadDoc(docMinioParam);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);//响应为流
+        fileName = URLEncoder.encode("下载_" + fileName, "UTF-8");
+        headers.setContentDispositionFormData("attachment", fileName);
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("remove")
+    public ResponseEntity remove(Long fileId) {
+        String fileName = "加密测试1.mpp";
+        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket("ethic-bucket")//桶的名字
+            .setBucketPath("zym/doc/")//桶中存放的具体路径
+            .setFileName(fileName)//文件名
+            .setDocId("123456789")//文件唯一标识ID
+            .setUserNick("zym")//用户名
+            .setUserId("1234")//用户ID
+            .build();
+        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
+        docStream.removeDoc(docMinioParam);
+        return new ResponseEntity("success", HttpStatus.OK);
+    }
+}

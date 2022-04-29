@@ -1,0 +1,59 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: minio
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  jpa:
+    database: mysql #数据库
+    hibernate:
+      ddl-auto: update #启用自动建表
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl #隐式命名策略
+    show-sql: false #是否打印执行sql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57InnoDBDialect #指定存储引擎为innodb
+    generate-ddl: true
+  datasource:
+    url: jdbc:mysql://124.221.248.68:3306/jpa_test_db?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    username: root
+    password: abc456123
+    driver-class-name: com.mysql.cj.jdbc.Driver #驱动类
+    dbcp2:
+      max-idle: 50 #最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分
+      min-idle: 10 #最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接
+      initial-size: 5 #初始化大小
+      max-wait-millis: 10000 #最大超时时间
+      time-between-eviction-runs-millis: 30000 # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      pool-prepared-statements: true # 打开PSCache,在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。
+      test-while-idle: true #如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
+      test-on-borrow: true #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: true #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      validation-query: select 'x' #用来检测连接是否有效的sql,如果这个没有配置则testOnBorrow和testOnReturn都不会生效
+    filters: stat,wall,log4j
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: info #\u8FC7\u6EE4\u6389spring\u4E2Dinfo\u4E00\u4E0B\u7EA7\u522B\u7684\u65E5\u5FD7
+
+doc-stream:
+  initMinio: true
+  url: http://124.221.248.68
+  port: 9000
+  accessKey: zym
+  secretKey: 123456789
+  multiPartRootPathMap: #本地上传配置的参数，如果只是用minio上传可不进行配置
+    Windows: E:\\temp
+    Linux: /opt/multiPartTemp
+
+
+
