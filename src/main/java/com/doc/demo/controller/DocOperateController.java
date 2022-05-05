@@ -1,6 +1,7 @@
 package com.doc.demo.controller;
 
 import com.doc.demo.enums.DocStreamEnum;
+import com.doc.demo.enums.MinioBucketEnum;
 import com.doc.demo.factory.DocStreamFactory;
 import com.doc.demo.model.stream.param.DocMinioParam;
 import com.doc.demo.model.stream.result.minio.DocMinioResult;
@@ -37,7 +38,7 @@ public class DocOperateController {
         File file = new File("D:\\DELL\\Desktop\\加密测试1.mpp");
         try (FileInputStream fis = new FileInputStream(file)) {
             DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
-                .setBucket("ethic-bucket")//存入的桶
+                .setBucket(MinioBucketEnum.ETHICS)//存入的桶
                 .setBucketPath("zym/doc/")//桶中的路径
                 .setFileName(file.getName())//文件名字
                 .setDocId("123456789")//文件唯一表示ID
@@ -64,7 +65,7 @@ public class DocOperateController {
     public ResponseEntity download(@RequestParam("fileName") String fileName) throws UnsupportedEncodingException {
         //        RandomAccessFile file = new RandomAccessFile();
         DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置解密
-            .setBucket("ethic-bucket")//桶的名字
+            .setBucket(MinioBucketEnum.ETHICS)//桶的名字
             .setBucketPath("zym/doc/")//桶中存放的具体路径
             .setFileName(fileName)//文件名
             .setDocId("123456789")//文件唯一标识ID
@@ -84,15 +85,15 @@ public class DocOperateController {
     @GetMapping("remove")
     public ResponseEntity remove(Long fileId) {
         String fileName = "加密测试1.mpp";
-        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket("ethic-bucket")//桶的名字
+        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket(MinioBucketEnum.ETHICS)//桶的名字
             .setBucketPath("zym/doc/")//桶中存放的具体路径
             .setFileName(fileName)//文件名
             .setDocId("123456789")//文件唯一标识ID
             .setUserNick("zym")//用户名
             .setUserId("1234")//用户ID
             .build();
-        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
-        docStream.removeDoc(docMinioParam);
-        return new ResponseEntity("success", HttpStatus.OK);
+        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, false);
+        boolean remove = docStream.removeDoc(docMinioParam);
+        return new ResponseEntity(remove, HttpStatus.OK);
     }
 }

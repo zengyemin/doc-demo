@@ -1,5 +1,6 @@
 package com.doc.demo.controller;
 
+import com.doc.demo.enums.MinioBucketEnum;
 import com.doc.demo.repository.jpa.StudentInfoRepository;
 import com.doc.demo.enums.DocStreamEnum;
 import com.doc.demo.enums.MultiPartFileDeleteEnum;
@@ -71,7 +72,7 @@ public class DocMultiPartController {
         //todo 真实业务场景docMinioParam的创建也是可以被隐藏的，可以在service中进行组装
         //获取文件的上传信息，如果是第一次则不会有上传信息
         MinioMultiPartResult userUploadCache = (MinioMultiPartResult) getUserUploadCache(userId, fileMd5);
-        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket("ethic-bucket")//桶
+        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket(MinioBucketEnum.ETHICS)//桶
             .setBucketPath("zym/doc/")//桶中存放地址
             .setFileMd5(fileMd5)//上传文件的MD5
             .setChunkCount(chunkCount)//分成多少断的参数
@@ -154,7 +155,7 @@ public class DocMultiPartController {
 
     @RequestMapping(value = "removeMinio", method = RequestMethod.GET)
     public ResponseEntity remove(@RequestParam("fileName") String fileName) {
-        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket("ethic-bucket")//桶
+        DocMinioParam docMinioParam = DocMinioParam.builder().setBucket(MinioBucketEnum.ETHICS)//桶
             .setBucketPath("zym/doc/")//桶中存放地址
             .setFileName(fileName)//文件名
             .setDocId(docId)//文件ID

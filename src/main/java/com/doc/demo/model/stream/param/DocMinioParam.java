@@ -1,6 +1,7 @@
 package com.doc.demo.model.stream.param;
 
 import com.doc.demo.config.DocStreamConfig.CustomMinioClient;
+import com.doc.demo.enums.MinioBucketEnum;
 import com.doc.demo.model.stream.DocParamAbstract;
 import com.doc.demo.stream.impl.MinioDocStreamImpl;
 import com.doc.demo.exception.DocParamException;
@@ -15,26 +16,32 @@ import java.io.InputStream;
  * @date : 2022/4/1 15:19
  **/
 public class DocMinioParam extends DocParamAbstract {
+
     /**
      * 存储的桶，可以理解为一个根目录
      */
-    private String bucket;
+    private MinioBucketEnum bucket;
+
     /**
      * minio中存储文件格式,例如:ethic/meeting/doc/
      */
     private String bucketPath;
+
     /**
      * 版本ID
      */
     private String versionsId;
+
     /**
      * 分片上传时minio使用的ID,如果当前参数为null则表示新建
      */
     private String uploadId;
+
     /**
      * 文件大小，-1表示不知道文件大小
      */
     private long objectSize = -1;
+
     /**
      * 文件上限
      */
@@ -64,7 +71,7 @@ public class DocMinioParam extends DocParamAbstract {
         return prefix + super.getMD5FileName();
     }
 
-    public String getBucket() {
+    public MinioBucketEnum getBucket() {
         return bucket;
     }
 
@@ -90,7 +97,6 @@ public class DocMinioParam extends DocParamAbstract {
         this.uploadId = builder.uploadId;
     }
 
-
     public static Builder builder() {
         return new Builder();
     }
@@ -114,18 +120,28 @@ public class DocMinioParam extends DocParamAbstract {
     }
 
     public static class Builder extends ParentBuilder<DocMinioParam.Builder> {
-        private String bucket;
+
+        private MinioBucketEnum bucket;
+
         private String versionsId;
+
         private String uploadId;
+
         private String bucketPath;
+
         private long objectSize = -1;
+
         private long partSize = 10485760;
 
         @Override
         protected void checkVerify() {
             super.parentCheckVerify();
-            if (!StringUtils.hasText(this.bucket)) throw new DocParamException("图片格式不能为空");
-            if (!StringUtils.hasText(this.bucketPath)) throw new DocParamException("桶的存储路径不能为空");
+            if (bucket == null) {
+                throw new DocParamException("存储Minio不能为空");
+            }
+            if (!StringUtils.hasText(this.bucketPath)) {
+                throw new DocParamException("桶的存储路径不能为空");
+            }
         }
 
         /**
@@ -134,7 +150,7 @@ public class DocMinioParam extends DocParamAbstract {
          * @param bucket 对应minio创建的桶
          * @return 当前对象 {@link DocMinioParam.Builder}
          */
-        public Builder setBucket(String bucket) {
+        public Builder setBucket(MinioBucketEnum bucket) {
             this.bucket = bucket;
             return this;
         }
@@ -175,7 +191,6 @@ public class DocMinioParam extends DocParamAbstract {
             return this;
         }
 
-
         /**
          * 设置本次上传对象的大小
          *
@@ -210,7 +225,6 @@ public class DocMinioParam extends DocParamAbstract {
             checkVerify();
             return new DocMinioParam(this);
         }
-
 
     }
 }

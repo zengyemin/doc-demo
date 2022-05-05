@@ -44,15 +44,15 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     @Override
     public DocMinioResult uploadDoc(@NotNull DocMinioParam param, @NotNull InputStream is) {
         clientInit();//初始化minio客户端
-        boolean exist = bucketExist(param.getBucket());
+        boolean exist = bucketExist(param.getBucket().name());
         DocMinioResult result = new DocMinioResult();
-        result.setBucket(param.getBucket());
+        result.setBucket(param.getBucket().name());
         if (!exist) {
             result.setMessage("无效的桶参数");
             return result;//如果桶不存在则直接返回false
         }
         PutObjectArgs args = PutObjectArgs.builder()
-                .bucket(param.getBucket())
+                .bucket(param.getBucket().name())
                 .object(param.getObjectName())
                 .stream(is, param.getObjectSize(), param.getPartSize())
                 .build();
@@ -77,7 +77,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
         clientInit();//初始化minio客户端
         GetObjectArgs args = GetObjectArgs.builder()
                 .versionId(param.getVersionsId())
-                .bucket(param.getBucket())
+                .bucket(param.getBucket().name())
                 .object(param.getObjectName()).build();
         GetObjectResponse response = null;
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -117,7 +117,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     public boolean removeDoc(@NotNull DocMinioParam param) {
         clientInit();//初始化minio客户端
         RemoveObjectArgs args = RemoveObjectArgs.builder()
-                .bucket(param.getBucket())
+                .bucket(param.getBucket().name())
                 .object(param.getObjectName())
                 .versionId(param.getVersionsId()).build();
         try {
@@ -232,7 +232,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
         //设置获取分段URL的通用参数
         GetPresignedObjectUrlArgs.Builder argsBuilder = GetPresignedObjectUrlArgs.builder()
                 .method(Method.PUT)
-                .bucket(param.getBucket())//桶的名字
+                .bucket(param.getBucket().name())//桶的名字
                 .object(param.getObjectName())//对象名字
                 .expiry(1, TimeUnit.DAYS);//临时文件过期时间
 
