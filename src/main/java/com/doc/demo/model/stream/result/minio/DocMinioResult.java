@@ -54,9 +54,7 @@ public class DocMinioResult extends DocResultAbstract {
 
     @Override
     public boolean isSuccess() {
-        return !StringUtils.hasText(bucketSavePath) &&
-                !StringUtils.hasText(etag) &&
-                !StringUtils.hasText(bucket);
+        return StringUtils.hasText(bucketSavePath) && StringUtils.hasText(etag) && StringUtils.hasText(bucket);
     }
 
     @Override
