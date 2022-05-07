@@ -90,21 +90,22 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
      * @return 返回一个预览文件目录 {@link File}
      */
-    default File getPreviewFile(@NotNull P param) {
+    default File getPreviewFileDir(@NotNull P param) {
         String osName = System.getProperty("os.name").toLowerCase();
         //预览文件根路径
         String rootPath = osName.contains("win") ? "C:\\temp_preview_dir" : "/usr/local/temp_preview_dir";
         //预览文件用户路径
         String userPath = param.getUserNick() + "_" + param.getUserId();
-        //具体临时文件存放路径
-        String md5FileName = param.getMD5FileName();
-        String finalPath = new StringBuilder(rootPath).append(File.separator)
-                .append(userPath).append(File.separator)
-                .append(md5FileName).toString();
+        //最终文件路径
+        String finalPath = new StringBuilder(rootPath).append(File.separator).append(userPath).toString();
         File file = new File(finalPath);
-        if (file.exists()) return file;
+        if (file.exists()) {
+            return file;
+        }
         boolean mkdirs = file.mkdirs();
-        if (!mkdirs) throw new DocStreamException("创建预览文件目录失败:" + finalPath);
+        if (!mkdirs) {
+            throw new DocStreamException("创建预览文件目录失败:" + finalPath);
+        }
         return file;
     }
 }

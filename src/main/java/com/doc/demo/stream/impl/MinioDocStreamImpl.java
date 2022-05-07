@@ -1,5 +1,8 @@
 package com.doc.demo.stream.impl;
 
+import com.doc.demo.enums.DocStreamEnum;
+import com.doc.demo.factory.DocStreamFactory;
+import com.doc.demo.utils.FileUtil;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.doc.demo.config.DocStreamConfig;
@@ -27,6 +30,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import org.springframework.util.StringUtils;
 
 /**
  * 图片相关的操作流
@@ -124,7 +128,50 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
 
     @Override
     public String docPreview(@NotNull DocMinioParam param, @NotNull Long expiredTime) {
+        // 初始化minio客户端
+        clientInit();
+        //预览文件目录，当前目录下的文件会根据expiredTime定期删除
+        File previewFileDir = getPreviewFileDir(param);
+        //获取对应原文件格式的MD5文件名
+        String md5FileNameFormat = param.getMD5FileNameFormat();
+        String existsPreviewFile = getExistsPreviewFile(previewFileDir, md5FileNameFormat);
+        //如果当前预览文件已经存在则直接返回路径
+        if (existsPreviewFile != null) {
+            return existsPreviewFile;
+        }
+
+        //判断是否传入解密参数
+        boolean isHasText = StringUtils.hasText(param.getSecretKey());
+        //获取实例化Doc操作对象
+        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, isHasText);
+        //下载需要预览的文件
+        byte[] bytes = docStream.downloadDoc(param);
+        //创建预览文件
+        File file = new File(previewFileDir, md5FileNameFormat);
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
+            //将流写入到文件中
+            return FileUtil.inputStreamWriteFile(inputStream, file);
+        } catch (IOException e) {
+            logger.error("docPreview IOException:{}", e);
+        }
         return null;
+    }
+
+    /**
+     * 获取已存在预览文件
+     *
+     * @param previewFileDir 预览文件目录
+     * @param md5FileNameFormat md5文件名格式与原文件一致
+     * @return 存在则返回具体地址，不存在则返回null
+     */
+    private String getExistsPreviewFile(File previewFileDir, String md5FileNameFormat) {
+        File[] childFiles = previewFileDir.listFiles();
+        if (childFiles == null) {
+            return null;
+        }
+        //匹配文件是否已存在预览目录中,匹配成功返回路径，失败返回null
+        return Arrays.stream(childFiles).filter(f -> f.getName().contains(md5FileNameFormat)).map(File::getPath)
+            .findAny().orElse(null);
     }
 
     /**

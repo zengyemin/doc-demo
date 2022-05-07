@@ -51,4 +51,33 @@ public class FileUtil {
 
     }
 
+    /**
+     * 传入输入流和一个文件，然后将流写入文件中
+     *
+     * @param is 传入的输入流 {@link InputStream}
+     * @param file 被写入的文件 {@link File}
+     * @return 写入文件的绝对路径 {@link String}
+     */
+    public static String inputStreamWriteFile(InputStream is, File file) {
+        if (!file.exists()) {
+            try {
+                boolean newFile = file.createNewFile();
+                if (!newFile) {
+                    return null;
+                }
+            } catch (IOException e) {
+                logger.error("创建写入文件失败 msg:{}", e.getMessage());
+                return null;
+            }
+        }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+            long copy = IOUtil.copy(is, fileOutputStream);
+            long size = copy / 1024 / 1024;
+            logger.info("流写入文件成功 文件名:{} 文件大小:{}", file.getName(), size);
+        } catch (IOException e) {
+            logger.error("流写入文件失败 msg:{}", e.getMessage());
+            return null;
+        }
+        return file.getPath();
+    }
 }

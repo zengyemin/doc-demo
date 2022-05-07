@@ -7,27 +7,34 @@ import com.doc.demo.model.stream.param.DocMinioParam;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
-
 import java.util.UUID;
-
 
 /**
  * @author : zengYeMin
  * @date : 2022/3/31 18:20
  **/
 public abstract class DocParamAbstract {
+
+    public static final String ENCRYPT_SUFFIX = ".ES";
+
     //保存文件的操作用户名,或者是下载文件操作的用户名
     private String userNick;
+
     //保存文件的操作用户ID,或者是下载文件操作的用户ID
     private String userId;
+
     //当前操作的文件ID，建议使用数据库表中主键ID，用于上传和查询使用
     private String docId;
+
     //文件的MD5值
     private String fileMd5;
+
     //用于当前文件加密使用，为null则表示不加密
     private String secretKey;
+
     //需要被保存的文件名字
     private String fileName;
+
     //分片的数量
     private Integer chunkCount;
 
@@ -82,13 +89,26 @@ public abstract class DocParamAbstract {
      * @return 格式例如：04178787C1680E079A00B1A8C202E221.ES
      */
     public final String getMD5FileName() {
-        String sb = new StringBuilder(this.getUserId())
-                .append(this.getFileName())
-                .append(this.getDocId()).toString();
-        final String ENCRYPT_SUFFIX = ".ES";
+        String sb = new StringBuilder(this.getUserId()).append(this.getFileName()).append(this.getDocId()).toString();
         return MD5.getInstance().getMD5ofStr32(sb.getBytes()) + ENCRYPT_SUFFIX;
     }
-    
+
+    /**
+     * 获取对应原文件格式的MD5文件名
+     *
+     * 1、获取加密的MD5文件名字
+     * 2、获取原文件名字
+     * 3、加密格式与原文件格式替换
+     *
+     * @return 格式例如：04178787C1680E079A00B1A8C202E221.pdf
+     */
+    public final String getMD5FileNameFormat() {
+        String md5FileName = this.getMD5FileName();
+        String fileName = this.getFileName();
+        String format = fileName.substring(fileName.lastIndexOf("."));
+        return md5FileName.replace(ENCRYPT_SUFFIX, format);
+    }
+
     /**
      * 其它类只有继承了 {@link DocParamAbstract.ParentBuilder} 才可使用
      * 加上{@link SuppressWarnings}的原因是泛型会进行转型警告
@@ -96,12 +116,19 @@ public abstract class DocParamAbstract {
      */
     @SuppressWarnings("unchecked")
     protected static abstract class ParentBuilder<P extends ParentBuilder> {
+
         private String userNick;//操作用户名
+
         private String userId;//用户ID
+
         private String docId;//当前操作的ID，用于上传和查询使用
+
         private String secretKey;//加密参数
+
         private String fileName;//文件名字
+
         private String fileMd5;
+
         private Integer chunkCount;
 
         /**
@@ -115,9 +142,15 @@ public abstract class DocParamAbstract {
          * 为当前类的必要参数检验，当前方法加上 {@code final} 修饰禁止重写
          */
         protected final void parentCheckVerify() {
-            if (!StringUtils.hasText(this.fileName)) throw new DocParamException("文件名字不能为空");
-            if (!StringUtils.hasText(this.docId)) throw new DocParamException("文件ID不能为空");
-            if (!StringUtils.hasText(this.userId)) throw new DocParamException("用户id不能为空");
+            if (!StringUtils.hasText(this.fileName)) {
+                throw new DocParamException("文件名字不能为空");
+            }
+            if (!StringUtils.hasText(this.docId)) {
+                throw new DocParamException("文件ID不能为空");
+            }
+            if (!StringUtils.hasText(this.userId)) {
+                throw new DocParamException("用户id不能为空");
+            }
         }
 
         public P setUserNick(String userNick) {
@@ -125,12 +158,10 @@ public abstract class DocParamAbstract {
             return (P) this;
         }
 
-
         public P setUserId(String userId) {
             this.userId = userId;
             return (P) this;
         }
-
 
         public P setDocId(String docId) {
             this.docId = docId;
@@ -157,7 +188,6 @@ public abstract class DocParamAbstract {
             this.secretKey = secretKey;
             return (P) this;
         }
-
 
         public P setFileName(String fileName) {
             this.fileName = fileName;
