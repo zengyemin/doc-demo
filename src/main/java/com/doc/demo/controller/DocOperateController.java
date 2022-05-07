@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ public class DocOperateController {
     //    @Resource
     //    private DocStreamProperties properties;
 
-    @GetMapping("upload")
+    @PostMapping("upload")
     public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile file) {
         try (ByteArrayInputStream fis = new ByteArrayInputStream(file.getBytes())) {
             DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密

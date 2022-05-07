@@ -42,6 +42,21 @@ uploadFile = () => {
     alert("请选择上传文件");
     return;
   }
+  let formData = new FormData()
+  formData.append("file", file);
+  let data = null;
+  $.ajax({
+    type: "POST",
+    url: 'http://localhost:8080/doc/upload',
+    data: formData,
+    cache: false, // 上传文件无需缓存
+    processData: false, // 使数据不做处理
+    contentType: false, // 不要设置Content-Type请求头
+    async: false, // 同步
+    success: function (res) {
+      data = res;
+    }
+  });
 }
 /**
  * 文件预览，目前与后端接口是静态关联

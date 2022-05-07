@@ -50,14 +50,14 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     @Override
     public DocMinioResult uploadDoc(@NotNull DocMinioParam param, @NotNull InputStream is) {
         clientInit();//初始化minio客户端
-        boolean exist = bucketExist(param.getBucket().name());
+        boolean exist = bucketExist(param.getBucket().getName());
         DocMinioResult result = new DocMinioResult();
-        result.setBucket(param.getBucket().name());
+        result.setBucket(param.getBucket().getName());
         if (!exist) {
             result.setMessage("无效的桶参数");
             return result;//如果桶不存在则直接返回false
         }
-        PutObjectArgs args = PutObjectArgs.builder().bucket(param.getBucket().name()).object(param.getObjectName())
+        PutObjectArgs args = PutObjectArgs.builder().bucket(param.getBucket().getName()).object(param.getObjectName())
             .stream(is, param.getObjectSize(), param.getPartSize()).build();
         try {
             ObjectWriteResponse response = client.putObject(args);
@@ -76,7 +76,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     @Override
     public byte[] downloadDoc(@NotNull DocMinioParam param) {
         clientInit();//初始化minio客户端
-        GetObjectArgs args = GetObjectArgs.builder().versionId(param.getVersionsId()).bucket(param.getBucket().name())
+        GetObjectArgs args = GetObjectArgs.builder().versionId(param.getVersionsId()).bucket(param.getBucket().getName())
             .object(param.getObjectName()).build();
         GetObjectResponse response = null;
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -114,7 +114,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     public boolean removeDoc(@NotNull DocMinioParam param) {
         clientInit();//初始化minio客户端
         RemoveObjectArgs args =
-            RemoveObjectArgs.builder().bucket(param.getBucket().name()).object(param.getObjectName())
+            RemoveObjectArgs.builder().bucket(param.getBucket().getName()).object(param.getObjectName())
                 .versionId(param.getVersionsId()).build();
         try {
             client.removeObject(args);
@@ -274,7 +274,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     private LinkedList<String> getUploadUrlList(DocMinioParam param, String multiPartUploadId) {
         //设置获取分段URL的通用参数
         GetPresignedObjectUrlArgs.Builder argsBuilder =
-            GetPresignedObjectUrlArgs.builder().method(Method.PUT).bucket(param.getBucket().name())//桶的名字
+            GetPresignedObjectUrlArgs.builder().method(Method.PUT).bucket(param.getBucket().getName())//桶的名字
                 .object(param.getObjectName())//对象名字
                 .expiry(1, TimeUnit.DAYS);//临时文件过期时间
 
