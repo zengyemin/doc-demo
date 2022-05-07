@@ -33,17 +33,17 @@ public class DocOperateController {
 
     private Logger logger = LoggerFactory.getLogger(DocOperateController.class);
 
-    private final String userNick = "zym", userId = "1234";
+    private final String userNick = "zym", userId = "1234",secretKey = "d08763ec-1a2f-4836-b1ef-16f3a5d77858";
     //    @Resource
     //    private DocStreamProperties properties;
 
     @PostMapping("upload")
     public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile file) {
         try (ByteArrayInputStream fis = new ByteArrayInputStream(file.getBytes())) {
-            DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
+            DocMinioParam docMinioParam = DocMinioParam.builder().secretKey(secretKey)//设置加密
                 .setBucket(MinioBucketEnum.ETHICS)//存入的桶
                 .setBucketPath("zym/doc/")//桶中的路径
-                .setFileName(file.getName())//文件名字
+                .setFileName(file.getOriginalFilename())//文件名字
                 .setDocId("123456789")//文件唯一表示ID
                 .setUserNick(userNick)//操作用户
                 .setUserId(userId)//操作用户ID
@@ -67,7 +67,7 @@ public class DocOperateController {
     @GetMapping("download")
     public ResponseEntity download(@RequestParam("fileName") String fileName) throws UnsupportedEncodingException {
         //        RandomAccessFile file = new RandomAccessFile();
-        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置解密
+        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey(secretKey)//设置解密
             .setBucket(MinioBucketEnum.ETHICS)//桶的名字
             .setBucketPath("zym/doc/")//桶中存放的具体路径
             .setFileName(fileName)//文件名
@@ -102,7 +102,7 @@ public class DocOperateController {
 
     @GetMapping("previewFile")
     public ResponseEntity previewFile(@RequestParam("fileName") String fileName) {
-        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
+        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey(secretKey)//设置加密
             .setBucket(MinioBucketEnum.ETHICS)//存入的桶
             .setBucketPath("zym/doc/")//桶中的路径
             .setFileName(fileName)//文件名字

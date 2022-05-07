@@ -88,10 +88,10 @@ public class DocStreamProxy implements InvocationHandler {
             IOUtil.copy(cipherInputStream, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            if (e.getSuppressed() != null && e.getMessage().contains("Such issues can arise if a bad key")) {
-                throw new KeyException("解密失败，请请检查你的公钥或私钥！！");
-            }
             logger.error("download IOException:{}", e.getMessage());
+            if (e.getSuppressed() != null && e.getMessage().contains("Such issues can arise if a bad key")) {
+                throw new KeyException("解密失败，请检查你的公钥或私钥！！");
+            }
             throw e;
         }
     }

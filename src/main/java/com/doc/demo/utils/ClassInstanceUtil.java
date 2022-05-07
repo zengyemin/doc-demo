@@ -1,6 +1,7 @@
 package com.doc.demo.utils;
 
-import com.sun.org.apache.bcel.internal.generic.ClassGenException;
+
+import org.aspectj.apache.bcel.generic.ClassGenException;
 
 /**
  * @author : zengYeMin
