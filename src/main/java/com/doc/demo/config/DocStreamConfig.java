@@ -66,7 +66,7 @@ public class DocStreamConfig {
          */
         public String getMultiPartUploadId(DocMinioParam param) {
             try {
-                CreateMultipartUploadResponse multipartUpload = super.createMultipartUpload(param.getBucket(),
+                CreateMultipartUploadResponse multipartUpload = super.createMultipartUpload(param.getBucket().name(),
                         null, param.getObjectName(), null, null);
                 return multipartUpload.result().uploadId();
             } catch (ErrorResponseException | InsufficientDataException | InternalException |
@@ -88,7 +88,7 @@ public class DocStreamConfig {
         public ObjectWriteResponse completeMultipartUpload(DocMinioParam param, Part[] parts) throws ServerException,
                 InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, IOException, InvalidKeyException,
                 XmlParserException, InvalidResponseException, InternalException {
-            return super.completeMultipartUpload(param.getBucket(), null, param.getObjectName(),
+            return super.completeMultipartUpload(param.getBucket().name(), null, param.getObjectName(),
                     param.getUploadId(), parts, null, null);
         }
 
@@ -102,7 +102,7 @@ public class DocStreamConfig {
         public ListPartsResponse listParts(DocMinioParam param) throws ServerException, InsufficientDataException,
                 ErrorResponseException, NoSuchAlgorithmException, IOException, InvalidKeyException, XmlParserException,
                 InvalidResponseException, InternalException {
-            return super.listParts(param.getBucket(), region, param.getObjectName(), null,
+            return super.listParts(param.getBucket().name(), region, param.getObjectName(), null,
                     null, param.getUploadId(), null, null);
         }
 

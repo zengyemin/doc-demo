@@ -1,9 +1,12 @@
 //分片大小 10m
 const chunkSize = 5 * 1024 * 1024;
-
-uploadFile = async () => {
+/**
+ * 分段文件上传
+ * @returns {Promise<void>}
+ */
+multiPartUploadFile = async () => {
   //获取用户选择的文件
-  const file = document.getElementById('selectFile').files[0];
+  const file = document.getElementById('selectMultiPartFile').files[0];
   if (file == null) {
     alert("请选择上传文件");
     return;
@@ -29,6 +32,23 @@ uploadFile = async () => {
   }
 
 };
+/**
+ * 文件上传
+ */
+uploadFile = () => {
+  //获取用户选择的文件
+  const file = document.getElementById('selectFile').files[0];
+  if (file == null) {
+    alert("请选择上传文件");
+    return;
+  }
+}
+/**
+ * 文件预览，目前与后端接口是静态关联
+ */
+previewFile = () => {
+
+}
 
 minioUploadHandler = async (file, fileMd5, chunkCount) => {
   const fileSize = file.size;

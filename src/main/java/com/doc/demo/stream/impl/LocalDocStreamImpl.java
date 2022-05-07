@@ -101,7 +101,7 @@ public class LocalDocStreamImpl implements DocStream<DocLocalParam, DocLocalResu
     @Override
     public String docPreview(@NotNull DocLocalParam param, @NotNull Long expiredTime) {
         byte[] bytes = this.downloadDoc(param);
-        File previewFile = getPreviewFile(param);
+        File previewFile = getPreviewFileDir(param);
         //获取预览的根路径文件
 //        File rootPreviewFile = getFile(getPreviewFilePath());
         return null;

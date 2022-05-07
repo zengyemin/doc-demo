@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
 import java.net.URLEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author : zengYeMin
@@ -30,20 +31,21 @@ import java.net.URLEncoder;
 public class DocOperateController {
 
     private Logger logger = LoggerFactory.getLogger(DocOperateController.class);
+
+    private final String userNick = "zym", userId = "1234";
     //    @Resource
     //    private DocStreamProperties properties;
 
     @GetMapping("upload")
-    public ResponseEntity uploadImage() {
-        File file = new File("D:\\DELL\\Desktop\\加密测试1.mpp");
-        try (FileInputStream fis = new FileInputStream(file)) {
+    public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile file) {
+        try (ByteArrayInputStream fis = new ByteArrayInputStream(file.getBytes())) {
             DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
                 .setBucket(MinioBucketEnum.ETHICS)//存入的桶
                 .setBucketPath("zym/doc/")//桶中的路径
                 .setFileName(file.getName())//文件名字
                 .setDocId("123456789")//文件唯一表示ID
-                .setUserNick("zym")//操作用户
-                .setUserId("1234")//操作用户ID
+                .setUserNick(userNick)//操作用户
+                .setUserId(userId)//操作用户ID
                 .build();
             //执行下载，如果文件需要加密则必须在调用上传之前设置解密key
             DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
@@ -69,8 +71,8 @@ public class DocOperateController {
             .setBucketPath("zym/doc/")//桶中存放的具体路径
             .setFileName(fileName)//文件名
             .setDocId("123456789")//文件唯一标识ID
-            .setUserNick("zym")//用户名
-            .setUserId("1234")//用户ID
+            .setUserNick(userNick)//用户名
+            .setUserId(userId)//用户ID
             .build();
         DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
         //执行下载，如果文件需要解密则必须在调用下载之前设置解密key
@@ -89,8 +91,8 @@ public class DocOperateController {
             .setBucketPath("zym/doc/")//桶中存放的具体路径
             .setFileName(fileName)//文件名
             .setDocId("123456789")//文件唯一标识ID
-            .setUserNick("zym")//用户名
-            .setUserId("1234")//用户ID
+            .setUserNick(userNick)//用户名
+            .setUserId(userId)//用户ID
             .build();
         DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, false);
         boolean remove = docStream.removeDoc(docMinioParam);
