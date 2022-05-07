@@ -99,4 +99,20 @@ public class DocOperateController {
         boolean remove = docStream.removeDoc(docMinioParam);
         return new ResponseEntity(remove, HttpStatus.OK);
     }
+
+    @GetMapping("previewFile")
+    public ResponseEntity previewFile(@RequestParam("fileName") String fileName) {
+        DocMinioParam docMinioParam = DocMinioParam.builder().secretKey("docMinioParam.getSecretKey")//设置加密
+            .setBucket(MinioBucketEnum.ETHICS)//存入的桶
+            .setBucketPath("zym/doc/")//桶中的路径
+            .setFileName(fileName)//文件名字
+            .setDocId("123456789")//文件唯一表示ID
+            .setUserNick(userNick)//操作用户
+            .setUserId(userId)//操作用户ID
+            .build();
+        DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
+        String s = docStream.docPreview(docMinioParam, 1);
+        logger.info("预览的文件的存放路径 path:{}", s);
+        return new ResponseEntity(s, HttpStatus.OK);
+    }
 }

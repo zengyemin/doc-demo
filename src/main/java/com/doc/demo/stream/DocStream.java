@@ -33,7 +33,7 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      * 流{@code is}进行关闭，外部引用此方法时切记调用关闭方法
      *
      * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
-     * @param is    需要被上传的IO流
+     * @param is 需要被上传的IO流
      * @return 处理成功则返回true, 失败返回false
      */
     R1 uploadDoc(@NotNull P param, @NotNull InputStream is);
@@ -58,7 +58,7 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      * 流{@code is}进行关闭，外部引用此方法时切记调用关闭方法
      *
      * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
-     * @param is    分段的流，如果是类似于minio直接使用第三方则传入null即可
+     * @param is 分段的流，如果是类似于minio直接使用第三方则传入null即可
      * @return 返回的数据对象为 {@link DocResultAbstract}的子类
      */
     R2 multiPartUpload(@NotNull P param, @Nullable InputStream is);
@@ -77,11 +77,11 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      * <p>
      * 如果预览文件是加密文件，则需要配置对应的解密参数
      *
-     * @param param       根据不同的实现类会有所变化 {@link DocParamAbstract}
-     * @param expiredTime 预览路径过期时间
+     * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
+     * @param expiredTime 预览路径过期时间，单位为小时
      * @return 返回一个绝对路径 {@link String}
      */
-    String docPreview(@NotNull P param, @NotNull Long expiredTime);
+    String docPreview(@NotNull P param, @NotNull Integer expiredTime);
 
     /**
      * 默认接口方法，获取预览文件的文件夹

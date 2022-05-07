@@ -127,7 +127,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     }
 
     @Override
-    public String docPreview(@NotNull DocMinioParam param, @NotNull Long expiredTime) {
+    public String docPreview(@NotNull DocMinioParam param, @NotNull Integer expiredTime) {
         // 初始化minio客户端
         clientInit();
         //预览文件目录，当前目录下的文件会根据expiredTime定期删除
