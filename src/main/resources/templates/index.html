@@ -1,74 +1,79 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
-    <div class="header clearfix">
-        <h4 class="text-muted">分段文件上传</h4>
-    </div>
+  <div class="header clearfix">
+    <h4 class="text-muted">分段文件上传</h4>
+  </div>
 
-    <div class="jumbotron">
-        <label class="radio-inline" style="font-size: 20px">
-            <input type="radio" name="uploadType" value="minio" checked> 文件上传到Minio
-        </label>
-        <label class="radio-inline" style="font-size: 20px">
-            <input type="radio" name="uploadType" value="local"> 文件上传到服务器
-        </label>
-        <br>
-        <br>
-        <div style="display: flex">
-            <p class="lead"><b>上传进度：</b></p>
-            <div class="progress" style="width: 600PX;height: 28px;font-size: 24px;background-color: white">
-                <div class="progress-bar progress-bar-success progress-bar-striped"
-                     id="progress" style="width: 0%">
-                    0%
-                </div>
-            </div>
+  <div class="jumbotron">
+    <label class="radio-inline" style="font-size: 20px">
+      <input type="radio" name="uploadType" value="minio" checked> 文件上传到Minio
+    </label>
+    <label class="radio-inline" style="font-size: 20px">
+      <input type="radio" name="uploadType" value="local"> 文件上传到服务器
+    </label>
+    <br>
+    <br>
+    <div style="display: flex">
+      <p class="lead"><b>上传进度：</b></p>
+      <div class="progress" style="width: 600PX;height: 28px;font-size: 24px;background-color: white">
+        <div class="progress-bar progress-bar-success progress-bar-striped"
+             id="progress" style="width: 0%">
+          0%
         </div>
-
-        <p>
-            <input type="file" class="btn btn-lg btn-info" id="selectMultiPartFile">
-        </p>
-        <p>
-            <input type="button" class="btn btn-lg btn-success" onclick="return multiPartUploadFile()" value="开始分段上传文件">
-        </p>
-
+      </div>
     </div>
 
-    <div class="header clearfix">
-        <h4 class="text-muted">文件上传</h4>
+    <p>
+      <input type="file" class="btn btn-lg btn-info" id="selectMultiPartFile">
+    </p>
+    <p>
+      <input type="button" class="btn btn-lg btn-success" onclick="return multiPartUploadFile()" value="开始分段上传文件">
+    </p>
+
+  </div>
+
+  <div class="header clearfix">
+    <h4 class="text-muted">文件上传</h4>
+  </div>
+  <div class="jumbotron">
+    <!--        <label class="radio-inline" style="font-size: 20px">-->
+    <!--            <input type="radio" name="uploadType" value="minio" checked> 文件上传到Minio-->
+    <!--        </label>-->
+    <!--        <label class="radio-inline" style="font-size: 20px">-->
+    <!--            <input type="radio" name="uploadType" value="local"> 文件上传到服务器-->
+    <!--        </label>-->
+    <br>
+    <br>
+
+
+    <p>
+      <input type="file" class="btn btn-lg btn-info" id="selectFile">
+    </p>
+    <p>
+      <input type="button" class="btn btn-lg btn-success" onclick="return uploadFile()" value="开始上传文件">
+    </p>
+    <p>
+    <div class="input-group input-group-lg">
+      <input type="button" class="btn btn-lg btn-info" onclick="return previewFile()" value="文件预览">
+      <input type="text" class="form-control" placeholder="请输入预览文件名字，例如：test.pdf" id="fileName">
     </div>
-    <div class="jumbotron">
-<!--        <label class="radio-inline" style="font-size: 20px">-->
-<!--            <input type="radio" name="uploadType" value="minio" checked> 文件上传到Minio-->
-<!--        </label>-->
-<!--        <label class="radio-inline" style="font-size: 20px">-->
-<!--            <input type="radio" name="uploadType" value="local"> 文件上传到服务器-->
-<!--        </label>-->
-        <br>
-        <br>
+    </p>
 
-
-        <p>
-            <input type="file" class="btn btn-lg btn-info" id="selectFile">
-        </p>
-        <p>
-            <input type="button" class="btn btn-lg btn-success" onclick="return uploadFile()" value="开始上传文件">
-            <input type="button" class="btn btn-lg btn-info" onclick="return previewFile()" value="预览文件">
-        </p>
-
-    </div>
+  </div>
 </div>
 
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->

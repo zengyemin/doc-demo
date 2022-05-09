@@ -111,7 +111,7 @@ public class DocOperateController {
             .setUserId(userId)//操作用户ID
             .build();
         DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
-        String s = docStream.docPreview(docMinioParam, 1);
+        String s = docStream.docPreview(docMinioParam, 5L);
         logger.info("预览的文件的存放路径 path:{}", s);
         return new ResponseEntity(s, HttpStatus.OK);
     }

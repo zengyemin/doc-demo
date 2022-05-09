@@ -9,6 +9,11 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+  redis:
+    password: tono_redis_123
+    host: 192.168.5.95
+    port: 6379
+    database: 10
   jpa:
     database: mysql #数据库
     hibernate:

@@ -1,6 +1,5 @@
 package com.doc.demo.utils;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +7,7 @@ import java.io.*;
 import java.util.List;
 
 public class FileUtil {
+
     protected static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
     /**
@@ -72,8 +72,8 @@ public class FileUtil {
         }
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             long copy = IOUtil.copy(is, fileOutputStream);
-            long size = copy / 1024 / 1024;
-            logger.info("流写入文件成功 文件名:{} 文件大小:{}", file.getName(), size);
+            long size = copy / 1024;
+            logger.info("流写入文件成功 文件名:{} 文件大小:{}KB", file.getName(), size);
         } catch (IOException e) {
             logger.error("流写入文件失败 msg:{}", e.getMessage());
             return null;

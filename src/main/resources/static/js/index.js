@@ -58,11 +58,22 @@ uploadFile = () => {
     }
   });
 }
+
 /**
  * 文件预览，目前与后端接口是静态关联
  */
-previewFile = () => {
-
+function previewFile() {
+  const fileName = $("#fileName").val();
+  console.log(fileName)
+  $.ajax({
+    type: "get",
+    url: 'http://localhost:8080/doc/previewFile',
+    ContentType: 'application/json',
+    data: {fileName: fileName},
+    success: function (res) {
+      alert(res);
+    }
+  });
 }
 
 minioUploadHandler = async (file, fileMd5, chunkCount) => {

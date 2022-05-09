@@ -1,5 +1,6 @@
 package com.doc.demo;
 
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -36,10 +37,12 @@ public class ProxyFactory {
     }
 
     public static void main(String[] args) {
-        HttpApi api = new RealModule();
-        HttpApi proxy = getProxy(api);
-        proxy.get("asdasdas");
-        HttpApi realModule = new RealModule();
-        realModule.get("4as5d4asd5a");
+        long l = TimeUnit.HOURS.toMillis(1);
+        System.out.println("l = " + l);
+        // HttpApi api = new RealModule();
+        // HttpApi proxy = getProxy(api);
+        // proxy.get("asdasdas");
+        // HttpApi realModule = new RealModule();
+        // realModule.get("4as5d4asd5a");
     }
 }

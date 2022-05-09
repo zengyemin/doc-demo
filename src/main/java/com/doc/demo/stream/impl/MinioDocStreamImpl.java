@@ -2,6 +2,7 @@ package com.doc.demo.stream.impl;
 
 import com.doc.demo.enums.DocStreamEnum;
 import com.doc.demo.factory.DocStreamFactory;
+import com.doc.demo.schedules.FileSchedule;
 import com.doc.demo.utils.FileUtil;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -76,8 +77,9 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     @Override
     public byte[] downloadDoc(@NotNull DocMinioParam param) {
         clientInit();//初始化minio客户端
-        GetObjectArgs args = GetObjectArgs.builder().versionId(param.getVersionsId()).bucket(param.getBucket().getName())
-            .object(param.getObjectName()).build();
+        GetObjectArgs args =
+            GetObjectArgs.builder().versionId(param.getVersionsId()).bucket(param.getBucket().getName())
+                .object(param.getObjectName()).build();
         GetObjectResponse response = null;
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             response = client.getObject(args);
@@ -127,7 +129,7 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
     }
 
     @Override
-    public String docPreview(@NotNull DocMinioParam param, @NotNull Integer expiredTime) {
+    public String docPreview(@NotNull DocMinioParam param, @NotNull Long expiredTime) {
         // 初始化minio客户端
         clientInit();
         //预览文件目录，当前目录下的文件会根据expiredTime定期删除
@@ -148,13 +150,17 @@ public class MinioDocStreamImpl implements DocStream<DocMinioParam, DocMinioResu
         byte[] bytes = docStream.downloadDoc(param);
         //创建预览文件
         File file = new File(previewFileDir, md5FileNameFormat);
+        String filePath = null;
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
             //将流写入到文件中
-            return FileUtil.inputStreamWriteFile(inputStream, file);
+            filePath = FileUtil.inputStreamWriteFile(inputStream, file);
         } catch (IOException e) {
             logger.error("docPreview IOException:{}", e);
         }
-        return null;
+        if (filePath != null) {
+            FileSchedule.instance().putFileExpiredInfo(filePath, expiredTime);
+        }
+        return filePath;
     }
 
     /**

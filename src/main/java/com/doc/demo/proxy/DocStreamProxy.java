@@ -16,14 +16,16 @@ import java.lang.reflect.Method;
 import java.security.KeyException;
 
 public class DocStreamProxy implements InvocationHandler {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private DocStream stream;
+
     private DocStreamUtil docStreamUtil = DocStreamUtil.instance();
 
     public DocStreamProxy(DocStream stream) {
         this.stream = stream;
     }
-
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -37,7 +39,7 @@ public class DocStreamProxy implements InvocationHandler {
             String secretKey = getSecretKey(args);
             //上传文件时，对传入的流参数进行加密处理
             invoke = uploadEncrypt(secretKey, method, args);
-            logger.info("{}执行结束");
+            logger.info("{}执行结束", name);
         }
         //对下载进行处理
         if ("downloadDoc".equals(name)) {
@@ -66,23 +68,24 @@ public class DocStreamProxy implements InvocationHandler {
         throw new DocParamException("无效的MD5文件名字");
     }
 
-
     /**
      * 下载文件时对返回的IO进行解密处理方法
      *
      * @param secretKey 文件解密KEY {@link DocParamAbstract#getSecretKey()}} 中获取
-     * @param method    代理执行的方法
-     * @param args      方法中的传递参数
+     * @param method 代理执行的方法
+     * @param args 方法中的传递参数
      * @return 执行完毕后的对象
      */
-    private Object downloadDecrypt(String secretKey, Method method, Object[] args) throws InvocationTargetException,
-            IllegalAccessException, KeyException, IOException {
+    private Object downloadDecrypt(String secretKey, Method method, Object[] args)
+        throws InvocationTargetException, IllegalAccessException, KeyException, IOException {
         //secretKey为null则表示当前文件没有设置解密需求
-        if (secretKey == null) return method.invoke(stream, args);
+        if (secretKey == null) {
+            return method.invoke(stream, args);
+        }
         Object invoke = method.invoke(stream, args);
 
         try (ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) invoke);
-             ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             //调用解密方法
             CipherInputStream cipherInputStream = docStreamUtil.decryptStream(bis, secretKey);
             IOUtil.copy(cipherInputStream, bos);
@@ -100,16 +103,15 @@ public class DocStreamProxy implements InvocationHandler {
      * 上传文件时，对传入的流参数进行加密处理
      *
      * @param secretKey 文件加密KEY {@link DocParamAbstract#getSecretKey()}} 中获取
-     * @param method    代理执行的方法
-     * @param args      方法中的传递参数
-     * @return
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * @param method 代理执行的方法
+     * @param args 方法中的传递参数
      */
-    private Object uploadEncrypt(String secretKey, Method method, Object[] args) throws InvocationTargetException,
-            IllegalAccessException {
+    private Object uploadEncrypt(String secretKey, Method method, Object[] args)
+        throws InvocationTargetException, IllegalAccessException {
         //secretKey为null则表示当前文件没有设置加密需求
-        if (secretKey == null) return method.invoke(stream, args);
+        if (secretKey == null) {
+            return method.invoke(stream, args);
+        }
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof InputStream) {
                 //对流进行加密
