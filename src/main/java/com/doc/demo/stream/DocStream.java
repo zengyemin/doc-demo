@@ -78,7 +78,7 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      * 如果预览文件是加密文件，则需要配置对应的解密参数
      *
      * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
-     * @param expiredTime 预览路径过期时间，单位为分钟
+     * @param expiredTime 预览路径过期时间，单位为分钟，如果 {@code expiredTime <= 0} 则表示不进行过期删除
      * @return 返回一个绝对路径 {@link String}
      */
     String docPreview(@NotNull P param, @NotNull Long expiredTime);

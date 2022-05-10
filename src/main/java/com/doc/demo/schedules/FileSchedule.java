@@ -64,6 +64,10 @@ public class FileSchedule {
      * @param expiredTime 过期时间，单位为分钟
      */
     public void putFileExpiredInfo(String filePath, Long expiredTime) {
+        //如果过期时间小于等于0，则不作保存，意味着文件不进行过期删除
+        if (expiredTime <= 0) {
+            return;
+        }
         //过期的毫秒数
         long expiredTimeMillis = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(expiredTime);
         redisTemplateInit();

@@ -33,7 +33,7 @@ public class DocOperateController {
 
     private Logger logger = LoggerFactory.getLogger(DocOperateController.class);
 
-    private final String userNick = "zym", userId = "1234",secretKey = "d08763ec-1a2f-4836-b1ef-16f3a5d77858";
+    private final String userNick = "zym", userId = "1234", secretKey = "d08763ec-1a2f-4836-b1ef-16f3a5d77858";
     //    @Resource
     //    private DocStreamProperties properties;
 
@@ -111,6 +111,9 @@ public class DocOperateController {
             .setUserId(userId)//操作用户ID
             .build();
         DocStream docStream = DocStreamFactory.getDocStreamInstance(DocStreamEnum.DOC_MINIO, true);
+        //传入-1L则表示永不过期
+        // String s = docStream.docPreview(docMinioParam, -1L);
+        //传入5L表示五分钟后过期
         String s = docStream.docPreview(docMinioParam, 5L);
         logger.info("预览的文件的存放路径 path:{}", s);
         return new ResponseEntity(s, HttpStatus.OK);
