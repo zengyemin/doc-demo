@@ -4,6 +4,7 @@ import com.doc.demo.model.stream.DocParamAbstract;
 
 import com.doc.demo.stream.DocStream;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * IO流的编辑函数式接口

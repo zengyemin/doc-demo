@@ -104,7 +104,9 @@ public class DocMultiPartController {
         Thread.sleep(600);//todo 这个是因为本地测试速度太快了，进行限制一下
         //        LocalMultiPartResult userUploadCache = (LocalMultiPartResult) getUserUploadCache(userId, fileMd5);
         DocLocalParam localParam = DocLocalParam.builder().secretKey()//加密
-            .setUserNick(userNick).setUserId(userId).setFileName(fileName)//文件名
+            .setUserNick(userNick)//用户名
+            .setUserId(userId)//用户ID
+            .setFileName(fileName)//文件名
             .setDocId(docId)//文件ID
             .setFileMd5(fileMd5)//上传文件的MD5
             .setChunkCount(chunkCount)//文件拆分的数量

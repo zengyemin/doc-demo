@@ -40,7 +40,9 @@ public class DocOperateController {
     @PostMapping("upload")
     public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile file) {
         try (ByteArrayInputStream fis = new ByteArrayInputStream(file.getBytes())) {
-            DocMinioParam docMinioParam = DocMinioParam.builder().secretKey(secretKey)//设置加密
+            DocMinioParam docMinioParam = DocMinioParam.builder()
+                //设置加密
+                .secretKey(secretKey)
                 .setBucket(MinioBucketEnum.ETHICS)//存入的桶
                 .setBucketPath("zym/doc/")//桶中的路径
                 .setFileName(file.getOriginalFilename())//文件名字
