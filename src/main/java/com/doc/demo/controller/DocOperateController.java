@@ -114,8 +114,8 @@ public class DocOperateController {
         //传入-1L则表示永不过期
         // String s = docStream.docPreview(docMinioParam, -1L);
         //传入5L表示五分钟后过期
-        String s = docStream.docPreview(docMinioParam, 5L);
-        logger.info("预览的文件的存放路径 path:{}", s);
-        return new ResponseEntity(s, HttpStatus.OK);
+        String path = docStream.docPreview(docMinioParam, 5L);
+        logger.info("预览的文件的存放路径 path:{}", path);
+        return new ResponseEntity(path, HttpStatus.OK);
     }
 }
