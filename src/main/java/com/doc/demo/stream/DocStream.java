@@ -79,7 +79,9 @@ public interface DocStream<P extends DocParamAbstract, R1 extends DocResultAbstr
      *
      * @param param 根据不同的实现类会有所变化 {@link DocParamAbstract}
      * @param expiredTime 预览路径过期时间，单位为分钟，如果 {@code expiredTime <= 0} 则表示不进行过期删除
-     * @return 返回一个绝对路径 {@link String}
+     * @return 返回一个绝对路径 {@link String}，
+     * Windows：C:\temp_preview_dir\zym_1234\8CC37C2B10C99B0964DB14E225E5BA31.xlsx
+     * Linux：/usr/local/temp_preview_dir/zym_1234/8CC37C2B10C99B0964DB14E225E5BA31.xlsx
      */
     String docPreview(@NotNull P param, @NotNull Long expiredTime);
 
